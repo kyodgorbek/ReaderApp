@@ -39,10 +39,12 @@ import com.example.readerapp.R
 import com.example.readerapp.components.EmailInput
 import com.example.readerapp.components.PasswordInput
 import com.example.readerapp.components.ReaderLogo
+import com.example.readerapp.navigation.ReaderScreens
 
 
 @Composable
-fun ReaderLoginScreen(navController: NavController) {
+fun ReaderLoginScreen(navController: NavController,
+                     viewModel: LoginScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     val showLoginForm = rememberSaveable {
         mutableStateOf(true)
 
@@ -54,15 +56,17 @@ fun ReaderLoginScreen(navController: NavController) {
             verticalArrangement = Arrangement.Top
         ) {
             ReaderLogo()
-            if (showLoginForm.value) UserForm(
-                loading = false,
-                isCreateAccount = false
-            ) { email, password ->
-                // Todo FB login
+            if (showLoginForm.value) UserForm(loading = false, isCreateAccount = false) { email, password ->
+                viewModel.signInWithEmailAndPassword(email, password, home = {})
+                    navController.navigate(ReaderScreens.ReaderHomeScreen.name)
+
             }
             else {
                 UserForm(loading = false, isCreateAccount = true) { email, password ->
-                    // Todo create account
+                    viewModel.signInWithEmailAndPassword(email, password){
+                        navController.navigate(ReaderScreens.ReaderHomeScreen.name)
+                    }
+
                 }
             }
         }
