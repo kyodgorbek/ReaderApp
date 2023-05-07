@@ -43,8 +43,10 @@ import com.example.readerapp.navigation.ReaderScreens
 
 
 @Composable
-fun ReaderLoginScreen(navController: NavController,
-                     viewModel: LoginScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun ReaderLoginScreen(
+    navController: NavController,
+    viewModel: LoginScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
     val showLoginForm = rememberSaveable {
         mutableStateOf(true)
 
@@ -56,14 +58,17 @@ fun ReaderLoginScreen(navController: NavController,
             verticalArrangement = Arrangement.Top
         ) {
             ReaderLogo()
-            if (showLoginForm.value) UserForm(loading = false, isCreateAccount = false) { email, password ->
+            if (showLoginForm.value) UserForm(
+                loading = false,
+                isCreateAccount = false
+            ) { email, password ->
                 viewModel.signInWithEmailAndPassword(email, password, home = {})
-                    navController.navigate(ReaderScreens.ReaderHomeScreen.name)
+                navController.navigate(ReaderScreens.ReaderHomeScreen.name)
 
             }
             else {
                 UserForm(loading = false, isCreateAccount = true) { email, password ->
-                    viewModel.signInWithEmailAndPassword(email, password){
+                    viewModel.createUserWithEmailAndPassword(email, password) {
                         navController.navigate(ReaderScreens.ReaderHomeScreen.name)
                     }
 

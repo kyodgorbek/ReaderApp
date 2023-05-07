@@ -9,16 +9,16 @@ import com.example.readerapp.screens.home.Home
 import com.example.readerapp.screens.login.ReaderLoginScreen
 
 @Composable
-fun  ReaderNavigation() {
+fun ReaderNavigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = ReaderScreens.SplashScreen.name){
-       composable(ReaderScreens.SplashScreen.name){
-           ReaderSplashScreen(navController = navController)
-       }
-        composable(ReaderScreens.LoginScreen.name){
+    NavHost(navController = navController, startDestination = ReaderScreens.SplashScreen.name) {
+        composable(ReaderScreens.SplashScreen.name) {
+            ReaderSplashScreen(navController = navController)
+        }
+        composable(ReaderScreens.LoginScreen.name) {
             ReaderLoginScreen(navController = navController)
         }
-        composable(ReaderScreens.ReaderHomeScreen.name){
+        composable(ReaderScreens.ReaderHomeScreen.name) {
             Home(navController = navController)
         }
     }

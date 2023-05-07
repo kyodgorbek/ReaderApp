@@ -22,8 +22,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ReaderAppTheme {
-ReaderApp()
-
+                ReaderApp()
 
 
                 // A surface container using the 'background' color from the theme
@@ -34,17 +33,19 @@ ReaderApp()
 }
 
 @Composable
-fun ReaderApp(){
+fun ReaderApp() {
     Surface(
         modifier = Modifier
             .fillMaxSize(),
-            //.padding(top = 46.dp),
+        //.padding(top = 46.dp),
         color = MaterialTheme.colors.background,
     ) {
-         Column(verticalArrangement = Arrangement.Center,
-                   horizontalAlignment = Alignment.CenterHorizontally) {
-ReaderNavigation()
-         }
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            ReaderNavigation()
+        }
 
     }
 }
@@ -53,6 +54,6 @@ ReaderNavigation()
 @Composable
 fun GreetingPreview() {
     ReaderAppTheme {
-      //  ReaderApp()
+        //  ReaderApp()
     }
 }

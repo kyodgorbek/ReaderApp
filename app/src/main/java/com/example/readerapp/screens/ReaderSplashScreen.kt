@@ -34,15 +34,24 @@ fun ReaderSplashScreen(navController: NavController) {
     val scale = remember {
         Animatable(0f)
     }
-    LaunchedEffect(key1 =true){
-     scale.animateTo(targetValue = 0.9f,
-        animationSpec = tween(durationMillis = 800,
-        easing = {
-         OvershootInterpolator(8f)
-             .getInterpolation(it)
-        }))
+    LaunchedEffect(key1 = true) {
+        scale.animateTo(
+            targetValue = 0.9f,
+            animationSpec = tween(durationMillis = 800,
+                easing = {
+                    OvershootInterpolator(8f)
+                        .getInterpolation(it)
+                })
+        )
         delay(2000L)
+        //  if(FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()){
+        //    navController.navigate(ReaderScreens.LoginScreen.name)
+//        }else{
+//            navController.navigate(ReaderScreens.ReaderHomeScreen.name)
+//        }
+//        navController.navigate(ReaderScreens.LoginScreen.name)
         navController.navigate(ReaderScreens.LoginScreen.name)
+        //}
     }
 
     Surface(
@@ -59,10 +68,12 @@ fun ReaderSplashScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-     ReaderLogo()
-          Spacer(modifier = Modifier.height(15.dp))  
-            Text(text = "\"Read. Change. Yourself \"",
-            style = MaterialTheme.typography.h5, color = Color.LightGray)
+            ReaderLogo()
+            Spacer(modifier = Modifier.height(15.dp))
+            Text(
+                text = "\"Read. Change. Yourself \"",
+                style = MaterialTheme.typography.h5, color = Color.LightGray
+            )
         }
     }
 }
