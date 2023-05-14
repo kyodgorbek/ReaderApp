@@ -30,22 +30,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.readerapp.components.InputField
 import com.example.readerapp.components.ReaderAppBar
-import com.example.readerapp.model.MBook
+import com.example.readerapp.model.Item
 import com.example.readerapp.navigation.ReaderScreens
 
-@Preview
+
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun SearchScreen(navController: NavController = NavController(LocalContext.current)) {
+fun SearchScreen(
+    navController: NavController,
+    viewModel: BookSearchViewModel = hiltViewModel()
+) {
     Scaffold(topBar = {
         ReaderAppBar(
             title = "Search Books",
@@ -61,12 +63,15 @@ fun SearchScreen(navController: NavController = NavController(LocalContext.curre
                 SearchForm(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
-                )
+                        .padding(16.dp),
+                    viewModel) { query->
+                    viewModel.searchBooks(query)
 
+                }
+                Spacer(modifier = Modifier.height(13.dp))
+                BookList(navController, viewModel)
             }
-            Spacer(modifier = Modifier.height(13.dp))
-            BookList(navController)
+
 
         }
     }
@@ -75,15 +80,12 @@ fun SearchScreen(navController: NavController = NavController(LocalContext.curre
 }
 
 @Composable
-fun BookList(navController: NavController) {
+fun BookList(navController: NavController, viewModel: BookSearchViewModel = hiltViewModel()) {
+//    if (viewModel.isLoading){
+//        CircularProgressIndicator()
+//    }
 
-    val listOfBooks = listOf(
-        MBook(id = "", title = "Harry Potter", authors = "Navoiy", notes = null),
-        MBook(id = "", title = "Harry Potter", authors = "Navoiy", notes = null),
-        MBook(id = "", title = "Harry Potter", authors = "Navoiy", notes = null),
-        MBook(id = "", title = "Harry Potter", authors = "Navoiy", notes = null),
-        MBook(id = "", title = "Harry Potter", authors = "Navoiy", notes = null)
-    )
+    val listOfBooks = viewModel.list
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
@@ -97,7 +99,7 @@ fun BookList(navController: NavController) {
 }
 
 @Composable
-fun BookRow(book: MBook, navController: NavController) {
+fun BookRow(book: Item, navController: NavController) {
     Card(modifier = Modifier
         .clickable {}
         .fillMaxWidth()
@@ -119,9 +121,9 @@ fun BookRow(book: MBook, navController: NavController) {
                     .padding(end = 4.dp)
             )
             Column() {
-                Text(text = book.title.toString(), overflow = TextOverflow.Ellipsis)
+                Text(text = book.volumeInfo.title, overflow = TextOverflow.Ellipsis)
                 Text(
-                    text = "Authors: ${book.authors.toString()}", overflow = TextOverflow.Clip,
+                    text = "Authors: ${book.volumeInfo.authors.toString()}", overflow = TextOverflow.Clip,
                     style = MaterialTheme.typography.caption
                 )
                 // Todo: add more fields later
@@ -136,6 +138,7 @@ fun BookRow(book: MBook, navController: NavController) {
 @Composable
 fun SearchForm(
     modifier: Modifier = Modifier,
+    viewModel: BookSearchViewModel,
     loading: Boolean = false,
     hint: String = "Search",
     onSearch: (String) -> Unit = {}
