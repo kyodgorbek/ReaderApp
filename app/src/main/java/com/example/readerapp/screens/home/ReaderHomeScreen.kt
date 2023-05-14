@@ -2,6 +2,7 @@ package com.example.readerapp.screens.home
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -76,8 +77,10 @@ fun Home(navController: NavController = NavController(LocalContext.current)) {
         ReaderAppBar(title = "A. Reader", navController = navController)
     },
         floatingActionButton = {
+
             FABContent {
                 navController.navigate(ReaderScreens.SearchScreen.name)
+
             }
         }) {
         Surface(modifier = Modifier.fillMaxSize()) {

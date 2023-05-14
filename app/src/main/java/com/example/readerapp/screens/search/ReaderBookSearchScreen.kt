@@ -111,8 +111,8 @@ fun BookRow(book: Item, navController: NavController) {
             modifier = Modifier.padding(5.dp),
             verticalAlignment = Alignment.Top
         ) {
-            val imageUrl =
-                "http://books.google.com/books/content?id=bPJnCEC0JkIC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            val imageUrl = if(book.volumeInfo.imageLinks.smallThumbnail.isEmpty())"http://books.google.com/books/content?id=bPJnCEC0JkIC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            else book.volumeInfo.imageLinks.smallThumbnail
             AsyncImage(
                 model = imageUrl, contentDescription = "Book Image",
                 modifier = Modifier

@@ -10,6 +10,7 @@ import com.example.readerapp.data.Resource
 import com.example.readerapp.model.Item
 import com.example.readerapp.repository.BookRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,11 +26,11 @@ class BookSearchViewModel @Inject constructor(private val repository: BookReposi
     }
 
     private fun loadBooks() {
-        searchBooks("flutter")
+        searchBooks("android")
     }
 
     fun searchBooks(query: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
 
             if (query.isEmpty()) {
                 return@launch
