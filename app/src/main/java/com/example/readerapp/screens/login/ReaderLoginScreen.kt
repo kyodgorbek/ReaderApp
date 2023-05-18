@@ -34,7 +34,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.readerapp.R
 import com.example.readerapp.components.EmailInput
@@ -52,17 +51,22 @@ fun ReaderLoginScreen(
     val showLoginForm = rememberSaveable { mutableStateOf(true) }
 
     Surface(modifier = Modifier.fillMaxSize()) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
             ReaderLogo()
-            if (showLoginForm.value) UserForm(loading = false, isCreateAccount = false){ email, password ->
-                viewModel.signInWithEmailAndPassword(email, password){
+            if (showLoginForm.value) UserForm(
+                loading = false,
+                isCreateAccount = false
+            ) { email, password ->
+                viewModel.signInWithEmailAndPassword(email, password) {
                     navController.navigate(ReaderScreens.ReaderHomeScreen.name)
 
                 }
             }
             else {
-                UserForm(loading = false, isCreateAccount = true){ email, password ->
+                UserForm(loading = false, isCreateAccount = true) { email, password ->
                     viewModel.createUserWithEmailAndPassword(email, password) {
                         navController.navigate(ReaderScreens.ReaderHomeScreen.name)
                     }
@@ -100,7 +104,7 @@ fun ReaderLoginScreen(
 fun UserForm(
     loading: Boolean = false,
     isCreateAccount: Boolean = false,
-    onDone: (String, String) -> Unit = { email, pwd ->}
+    onDone: (String, String) -> Unit = { email, pwd -> }
 ) {
     val email = rememberSaveable { mutableStateOf("") }
     val password = rememberSaveable { mutableStateOf("") }
@@ -117,10 +121,14 @@ fun UserForm(
         .verticalScroll(rememberScrollState())
 
 
-    Column(modifier,
-        horizontalAlignment = Alignment.CenterHorizontally) {
-        if (isCreateAccount) Text(text = stringResource(id = R.string.create_account),
-            modifier = Modifier.padding(4.dp)) else Text("")
+    Column(
+        modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (isCreateAccount) Text(
+            text = stringResource(id = R.string.create_account),
+            modifier = Modifier.padding(4.dp)
+        ) else Text("")
         EmailInput(
             emailState = email, enabled = !loading,
             onAction = KeyboardActions {
@@ -142,11 +150,10 @@ fun UserForm(
             textId = if (isCreateAccount) "Create Account" else "Login",
             loading = loading,
             validInputs = valid
-        ){
+        ) {
             onDone(email.value.trim(), password.value.trim())
             keyboardController?.hide()
         }
-
 
 
     }
@@ -155,10 +162,12 @@ fun UserForm(
 }
 
 @Composable
-fun SubmitButton(textId: String,
-                 loading: Boolean,
-                 validInputs: Boolean,
-                 onClick: () -> Unit) {
+fun SubmitButton(
+    textId: String,
+    loading: Boolean,
+    validInputs: Boolean,
+    onClick: () -> Unit
+) {
     Button(
         onClick = onClick,
         modifier = Modifier

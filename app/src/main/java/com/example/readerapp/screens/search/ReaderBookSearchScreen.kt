@@ -2,6 +2,7 @@ package com.example.readerapp.screens.search
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.Card
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -31,6 +33,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -64,7 +67,8 @@ fun SearchScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    viewModel) { query->
+                    viewModel
+                ) { query ->
                     viewModel.searchBooks(query)
 
                 }
@@ -80,18 +84,32 @@ fun SearchScreen(
 }
 
 @Composable
-fun BookList(navController: NavController, viewModel: BookSearchViewModel = hiltViewModel()) {
-//    if (viewModel.isLoading){
-//        CircularProgressIndicator()
-//    }
+fun BookList(
+    navController: NavController,
+    viewModel: BookSearchViewModel = hiltViewModel()
+) {
+
 
     val listOfBooks = viewModel.list
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-    ) {
-        items(items = listOfBooks) { book ->
-            BookRow(book, navController)
+    if (viewModel.isLoading) {
+        Row(
+            modifier = Modifier.padding(end = 2.dp),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            LinearProgressIndicator()
+            Text(text = "Loading...")
+        }
+
+    } else {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(16.dp)
+        ) {
+            items(items = listOfBooks) { book ->
+                BookRow(book, navController)
+
+            }
 
         }
     }
@@ -101,7 +119,9 @@ fun BookList(navController: NavController, viewModel: BookSearchViewModel = hilt
 @Composable
 fun BookRow(book: Item, navController: NavController) {
     Card(modifier = Modifier
-        .clickable {}
+        .clickable {
+            navController.navigate(ReaderScreens.DetailScreen.name + "/${book.id}")
+        }
         .fillMaxWidth()
         .height(100.dp)
         .padding(3.dp),
@@ -111,8 +131,11 @@ fun BookRow(book: Item, navController: NavController) {
             modifier = Modifier.padding(5.dp),
             verticalAlignment = Alignment.Top
         ) {
-            val imageUrl = if(book.volumeInfo.imageLinks.smallThumbnail.isEmpty())"http://books.google.com/books/content?id=bPJnCEC0JkIC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
-            else book.volumeInfo.imageLinks.smallThumbnail
+            val imageUrl: String = if (book.volumeInfo.imageLinks.smallThumbnail.isEmpty())
+                "https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=80&q=80"
+            else {
+                book.volumeInfo.imageLinks.smallThumbnail
+            }
             AsyncImage(
                 model = imageUrl, contentDescription = "Book Image",
                 modifier = Modifier
@@ -123,10 +146,26 @@ fun BookRow(book: Item, navController: NavController) {
             Column() {
                 Text(text = book.volumeInfo.title, overflow = TextOverflow.Ellipsis)
                 Text(
-                    text = "Authors: ${book.volumeInfo.authors.toString()}", overflow = TextOverflow.Clip,
+                    text = "Authors: ${book.volumeInfo.authors.toString()}",
+                    overflow = TextOverflow.Clip,
+                    fontStyle = FontStyle.Italic,
                     style = MaterialTheme.typography.caption
+
                 )
-                // Todo: add more fields later
+                Text(
+                    text = "Date: ${book.volumeInfo.publishedDate.toString()}",
+                    overflow = TextOverflow.Clip,
+                    fontStyle = FontStyle.Italic,
+                    style = MaterialTheme.typography.caption,
+
+                    )
+                Text(
+                    text = "${book.volumeInfo.categories.toString()}", overflow = TextOverflow.Clip,
+                    fontStyle = FontStyle.Italic,
+                    style = MaterialTheme.typography.caption,
+
+                    )
+
 
             }
         }
@@ -152,7 +191,9 @@ fun SearchForm(
             searchQueryState.value.trim().isNotEmpty()
         }
 
-        InputField(valueState = searchQueryState, labelId = "Search", enabled = true,
+        InputField(valueState = searchQueryState,
+            labelId = "Search",
+            enabled = true,
             onAction = KeyboardActions {
 
                 if (!valid) return@KeyboardActions

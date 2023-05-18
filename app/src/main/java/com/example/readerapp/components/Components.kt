@@ -162,13 +162,15 @@ fun PasswordVisibility(passwordVisibility: MutableState<Boolean>) {
 }
 
 @Composable
-fun TitleSection(modifier: Modifier = Modifier, label:String){
-    Surface(modifier = modifier.padding(start = 5.dp, top = 1.dp )) {
+fun TitleSection(modifier: Modifier = Modifier, label: String) {
+    Surface(modifier = modifier.padding(start = 5.dp, top = 1.dp)) {
         Column {
-            Text(text = label,
+            Text(
+                text = label,
                 fontSize = 19.sp,
                 fontStyle = FontStyle.Normal,
-                textAlign = TextAlign.Left)
+                textAlign = TextAlign.Left
+            )
         }
 
     }
@@ -176,64 +178,76 @@ fun TitleSection(modifier: Modifier = Modifier, label:String){
 
 @Composable
 fun ReaderAppBar(
-    title:String,
+    title: String,
     icon: ImageVector? = null,
-    showProfile:Boolean = true,
+    showProfile: Boolean = true,
     navController: NavController,
-     onBackArrowClicked:() -> Unit = {}){
-    TopAppBar(title = {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            if(showProfile){
-                Icon(imageVector = Icons.Default.Favorite,
-                    contentDescription = "Logo Icon",
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(12.dp))
-                        .scale(0.9f))
-            }
-            if(icon != null){
-                Icon(imageVector = icon, contentDescription = "arrow back",
-                tint = Color.Red.copy(alpha = 0.7f),
-                  modifier = Modifier.clickable {onBackArrowClicked.invoke() })
-            }
-            Spacer(modifier = Modifier.width(40.dp))
-            Text(text = title, color = Color.Red.copy(alpha = 0.7f),
-                style = TextStyle(fontWeight = FontWeight.Bold), fontSize = 20.sp)
+    onBackArrowClicked: () -> Unit = {}
+) {
+    TopAppBar(
+        title = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (showProfile) {
+                    Icon(
+                        imageVector = Icons.Default.Favorite,
+                        contentDescription = "Logo Icon",
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(12.dp))
+                            .scale(0.9f)
+                    )
+                }
+                if (icon != null) {
+                    Icon(imageVector = icon, contentDescription = "arrow back",
+                        tint = Color.Red.copy(alpha = 0.7f),
+                        modifier = Modifier.clickable { onBackArrowClicked.invoke() })
+                }
+                Spacer(modifier = Modifier.width(40.dp))
+                Text(
+                    text = title, color = Color.Red.copy(alpha = 0.7f),
+                    style = TextStyle(fontWeight = FontWeight.Bold), fontSize = 20.sp
+                )
 
-        }
-    },
+            }
+        },
         actions = {
             IconButton(onClick = {
                 FirebaseAuth.getInstance().signOut().run {
                     navController.navigate(ReaderScreens.LoginScreen.name)
                 }
-            }) {if(showProfile)Row(){
-                Icon(imageVector = Icons.Filled.Logout , contentDescription = "Logout Icon",
-                )
-            }else Box{}
+            }) {
+                if (showProfile) Row() {
+                    Icon(
+                        imageVector = Icons.Filled.Logout, contentDescription = "Logout Icon",
+                    )
+                } else Box {}
 
             }
         },
         backgroundColor = Color.Transparent,
-        elevation = 0.dp)
+        elevation = 0.dp
+    )
 
 
 }
 
 @Composable
-fun FABContent(onTap:() -> Unit) {
-    FloatingActionButton(onClick  =  {onTap()},
+fun FABContent(onTap: () -> Unit) {
+    FloatingActionButton(
+        onClick = { onTap() },
         shape = RoundedCornerShape(50.dp),
         backgroundColor = Color(0xFF92CBDF)
     ) {
-        Icon(imageVector = Icons.Default.Add, contentDescription = "Add A Book", tint = Color.White )
+        Icon(imageVector = Icons.Default.Add, contentDescription = "Add A Book", tint = Color.White)
     }
 
 }
 
 @Preview
 @Composable
-fun ListCard(book: MBook = MBook("shsjhsh", "Running", "Me and You", "hello world"),
-             onPressDetails:(String) -> Unit = {}) {
+fun ListCard(
+    book: MBook = MBook("shsjhsh", "Running", "Me and You", "hello world"),
+    onPressDetails: (String) -> Unit = {}
+) {
 
     val context = LocalContext.current
     val resources = context.resources
@@ -249,10 +263,12 @@ fun ListCard(book: MBook = MBook("shsjhsh", "Running", "Me and You", "hello worl
             .width(200.dp)
             .clickable {
                 onPressDetails.invoke(book.title.toString())
-            }){
-        Column(modifier = Modifier.width(screenWidth.dp - (spacing * 2)),
-            horizontalAlignment = Alignment.Start){
-            Row(horizontalArrangement = Arrangement.Center){
+            }) {
+        Column(
+            modifier = Modifier.width(screenWidth.dp - (spacing * 2)),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Row(horizontalArrangement = Arrangement.Center) {
                 AsyncImage(
                     model = "http://books.google.com/books/content?id=bPJnCEC0JkIC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
                     contentDescription = null,
@@ -260,28 +276,39 @@ fun ListCard(book: MBook = MBook("shsjhsh", "Running", "Me and You", "hello worl
                         .height(140.dp)
                         .width(100.dp)
                         .fillMaxSize()
-                        .padding(4.dp))
+                        .padding(4.dp)
+                )
                 Spacer(modifier = Modifier.width(50.dp))
-                Column(modifier = Modifier.padding(top = 25.dp),
+                Column(
+                    modifier = Modifier.padding(top = 25.dp),
                     verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally){
-                    Icon(imageVector = Icons.Rounded.FavoriteBorder, contentDescription = "Fav Icon",
-                        modifier = Modifier.padding(bottom = 1.dp))
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.FavoriteBorder, contentDescription = "Fav Icon",
+                        modifier = Modifier.padding(bottom = 1.dp)
+                    )
                     BookRating(score = 3.5)
                 }
             }
 
-            Text(text = book.title.toString(), modifier = Modifier.padding(4.dp),
+            Text(
+                text = book.title.toString(), modifier = Modifier.padding(4.dp),
                 fontWeight = FontWeight.Bold,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis)
-            Text(text = book.authors.toString(), modifier = Modifier.padding(4.dp),
-                style = MaterialTheme.typography.caption)
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = book.authors.toString(), modifier = Modifier.padding(4.dp),
+                style = MaterialTheme.typography.caption
+            )
         }
 
 
-        Row(horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.Bottom) {
+        Row(
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.Bottom
+        ) {
 
             RoundedButton(label = "Reading", radius = 70)
 
@@ -331,10 +358,13 @@ fun BookRating(score: Double = 4.5) {
             .padding(4.dp),
         shape = RoundedCornerShape(56.dp),
         elevation = 6.dp,
-        color = Color.White) {
+        color = Color.White
+    ) {
         Column(modifier = Modifier.padding(4.dp)) {
-            Icon(imageVector = Icons.Filled.StarBorder, contentDescription = " Star Border",
-                modifier = Modifier.padding(3.dp))
+            Icon(
+                imageVector = Icons.Filled.StarBorder, contentDescription = " Star Border",
+                modifier = Modifier.padding(3.dp)
+            )
             Text(text = score.toString(), style = MaterialTheme.typography.subtitle1)
 
         }
