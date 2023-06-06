@@ -11,10 +11,12 @@ import androidx.navigation.navArgument
 import com.example.readerapp.screens.ReaderSplashScreen
 import com.example.readerapp.screens.details.BookDetailsScreen
 import com.example.readerapp.screens.home.Home
+import com.example.readerapp.screens.home.HomeScreenViewModel
 import com.example.readerapp.screens.login.ReaderLoginScreen
 import com.example.readerapp.screens.search.BookSearchViewModel
 import com.example.readerapp.screens.search.SearchScreen
 import com.example.readerapp.screens.stats.ReaderStatsScreen
+import com.example.readerapp.screens.update.BookUpdateScreen
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -30,10 +32,13 @@ fun ReaderNavigation() {
             ReaderLoginScreen(navController = navController)
         }
         composable(ReaderScreens.ReaderStatsScreen.name) {
-            ReaderStatsScreen(navController = navController)
+            val homeViewModel = hiltViewModel<HomeScreenViewModel>()
+            ReaderStatsScreen(navController = navController, viewModel = homeViewModel)
         }
+
         composable(ReaderScreens.ReaderHomeScreen.name) {
-            Home(navController = navController)
+            val homeViewModel = hiltViewModel<HomeScreenViewModel>()
+            Home(navController = navController, viewModel = homeViewModel)
         }
 
         composable(ReaderScreens.SearchScreen.name) {
@@ -45,10 +50,24 @@ fun ReaderNavigation() {
             type = NavType.StringType
         })) { backStackEntry ->
             backStackEntry.arguments?.getString("bookId").let {
+
                 BookDetailsScreen(navController = navController, bookId = it.toString())
             }
+        }
 
+        val updateName = ReaderScreens.UpdateScreen.name
+        composable("$updateName/{bookItemId}",
+            arguments = listOf(navArgument("bookItemId") {
+                type = NavType.StringType
+            })
+        ) { navBackStackEntry ->
+
+            navBackStackEntry.arguments?.getString("bookItemId").let {
+                BookUpdateScreen(navController = navController, bookItemId = it.toString())
+            }
 
         }
+
     }
+
 }

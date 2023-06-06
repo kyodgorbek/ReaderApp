@@ -6,10 +6,8 @@ data class MUser(
     val displayName: String,
     val avatarUrl: String,
     val quote: String,
-    val profession: String,
-
-    ) {
-
+    val profession: String
+) {
     fun toMap(): MutableMap<String, Any> {
         return mutableMapOf(
             "user_id" to this.userId,
@@ -19,4 +17,5 @@ data class MUser(
             "avatar_url" to this.avatarUrl
         )
     }
+
 }
